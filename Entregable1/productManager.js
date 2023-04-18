@@ -1,23 +1,20 @@
+const fs = require('fs');
+
 class ProductManager {
-    //variable que me guarda los productos.
+    //variable local de id de los productos.
     #id = 0;
     constructor() {
-        this.products = [];
-    }
+        this.path = './products.json'
 
-    // devuelve todos los productos//
-    getProduct() {
-        return this.products;
-
-    }
-    //agrega producto
-    addProduct(title, description, price, thrumbail, code, stock) {
-        let validCode = this.products.findIndex((product) => product.code === code)
-        if ((title.length === 0) || (description.length === 0) || (price.length ===  0) || (thrumbail.length ===  0) || (code.length ===  0) ||(stock.length ===  0) || (validCode != -1)) {
-            console.log("Verifique que los campos esten llenos, y que el code no sea igual a el de los productos ya cargados!.")
-            return;
+        //el constructor no puede ser asyncronico
+        if (!fs.existsSync(this.path)) {
+            fs.writeSync(this.path, JSON.stringify([]));
         }
+        //creo el archivo.
+    }
 
+    //agrega producto buscando el archivo y agregando el producto//
+    async addProduct(title, description, price, thrumbail, code, stock) {
         const product = {
             title,
             description,
@@ -29,10 +26,21 @@ class ProductManager {
         //agrega id al evento!
         product.id = this.#getID();
 
-        this.products.push(product);
+        try {
+            //me hace el getproduct para retornar los datos guardados
+            const actualProduct = await this.getProduct();
+            let validCode = actualProduct.findIndex((product) => product.code === code)
+            //guardo los datos nuevos si cumple que no son nulos, y que sean distinto codigo.
+            if ((Object.values(product.length) !== 0) || (validCode === -1)) {
+                actualProduct.push(product);
+                //esrcribo devuelta el archivo
+                await fs.promises.writeFile(this.path, JSON.stringify(actualProduct));
+            }
 
+        } catch (err) {
+            console.log('No pudimos cargar el usuario');
+        }
     }
-
 
     //crea un id por cada producto nuevo.
     #getID() {
@@ -40,18 +48,42 @@ class ProductManager {
         return this.#id;
     }
 
-    //busco por ID el producto guardado//
-    getProductByID(idProducto) {
-        const productoIndex = this.products.findIndex((product) => product.id === idProducto);
+    //devuelve todos los productos con una promesa buscando en el archivo//
+    async getProduct() {
+        try {
+            //busco el archivo
+            const dateProduct = await fs.promises.readFile(this.path, 'utf-8');
+            //muestro datos del archivo
+            return JSON.parse(dateProduct);
 
-        if (productoIndex === -1) {
-            console.log("NOT FOUND, el producto no existe!!.")
-            return;
+        } catch (err) {
+            console.log('No puedo traer datos de Productos');
         }
-        const product = this.products[productoIndex];
-        return product;
     }
 
+    //busco por ID el producto guardado//
+    async getProductByID(idProducto) {
+        try {
+            //busco el archivo
+            const dateProduct = await fs.promises.readFile(this.path, 'utf-8');
+            //guardo el archivo en []
+            let products = JSON.parse(dateProduct);
+            //busco el producto por id
+            let productIndex = products.findIndex((product) => product.id === idProducto);
+            //lo muestro
+            return products[productIndex];
+
+        } catch (err) {
+            console.log("NOT FOUND, el producto no se encontro")
+
+        }
+    }
+
+    updateProduct(idProduct){
+        const changeProduct = this.getProductByID(idProduct);
+        
+
+    }
 }
 
 const asd = new ProductManager();
