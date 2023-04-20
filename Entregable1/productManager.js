@@ -3,19 +3,25 @@ const fs = require('fs');
 class ProductManager {
     //variable local de id de los productos.
     #id = 0;
+    //crea el archivo
     constructor() {
-        this.path = './products.json'
+        this.path = './products.json';
 
-        //el constructor no puede ser asyncronico
         if (!fs.existsSync(this.path)) {
-            fs.writeSync(this.path, JSON.stringify([]));
+            fs.writeFileSync(this.path, JSON.stringify([]));
         }
-        //creo el archivo.
+
     }
 
     //agrega producto buscando el archivo y agregando el producto//
     async addProduct(title, description, price, thrumbail, code, stock) {
-        const product = {
+        // recopilo los datos y creo el objeto//
+
+        if ((title.length === 0) || (description.length === 0) || (price.length === 0) || (thrumbail.length === 0) || (code.length === 0) || (stock.length === 0)) {
+            console.log("Verifique que los campos esten llenos, y que el code no sea igual a el de los productos ya cargados!.")
+            return;
+        }
+        const newProduct = {
             title,
             description,
             price,
@@ -23,22 +29,36 @@ class ProductManager {
             code,
             stock
         };
-        //agrega id al evento!
-        product.id = this.#getID();
+        //agrega id al objeto!
+        newProduct.id = this.#getID();
 
         try {
-            //me hace el getproduct para retornar los datos guardados
+            //busco el archivo y lo traigo//
             const actualProduct = await this.getProduct();
-            let validCode = actualProduct.findIndex((product) => product.code === code)
-            //guardo los datos nuevos si cumple que no son nulos, y que sean distinto codigo.
-            if ((Object.values(product.length) !== 0) || (validCode === -1)) {
-                actualProduct.push(product);
-                //esrcribo devuelta el archivo
-                await fs.promises.writeFile(this.path, JSON.stringify(actualProduct));
+            if (actualProduct != []) {
+                for (let i = 0; i < actualProduct.length; i++) {
+                    let validCode = actualProduct[i].code;
+                    if (validCode != newProduct.code ) {
+                        actualProduct.push(newProduct);
+                        await fs.promises.writeFile(
+                            this.path,
+                            JSON.stringify(actualProduct)
+                        );
+                    } else {
+                        console.log("ya existe ese code");
+                    }
+                }
             }
+            actualProduct.push(newProduct);
+            await fs.promises.writeFile(
+                this.path,
+                JSON.stringify(actualProduct)
+            );
+
+            // pusheo a ese array que traigo, el nuevo objeto!
 
         } catch (err) {
-            console.log('No pudimos cargar el usuario');
+            console.log('No pudimos cargar el producto', err);
         }
     }
 
@@ -48,16 +68,17 @@ class ProductManager {
         return this.#id;
     }
 
-    //devuelve todos los productos con una promesa buscando en el archivo//
+    //funciona
     async getProduct() {
         try {
             //busco el archivo
             const dateProduct = await fs.promises.readFile(this.path, 'utf-8');
             //muestro datos del archivo
-            return JSON.parse(dateProduct);
+
+            return JSON.parse(dateProduct)
 
         } catch (err) {
-            console.log('No puedo traer datos de Productos');
+            console.log('No puedo traer datos de Productos', err);
         }
     }
 
@@ -74,22 +95,21 @@ class ProductManager {
             return products[productIndex];
 
         } catch (err) {
-            console.log("NOT FOUND, el producto no se encontro")
+            console.log("NOT FOUND, el producto no se encontro", err)
 
         }
     }
 
-    updateProduct(idProduct){
+    updateProduct(idProduct) {
         const changeProduct = this.getProductByID(idProduct);
-        
+
 
     }
 }
 
 const asd = new ProductManager();
 
-asd.addProduct("asd", "una calza que calza", 250, "www.asd.com", "abc1234", 10);
-asd.addProduct("mantel", "alto mantel", 250, "no tiene", "abc123", 25)
+asd.addProduct('jean', 'cortos', 'no tiene', 'asd', 50, 20);
+asd.addProduct('jean', 'cortos', 'no tiene', 'asd', 70, 20);
 
-console.log(asd.getProduct(), asd.getProductByID(0))
 
