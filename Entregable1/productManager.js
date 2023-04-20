@@ -35,27 +35,29 @@ class ProductManager {
         try {
             //busco el archivo y lo traigo//
             const actualProduct = await this.getProduct();
-            if (actualProduct != []) {
+            if (actualProduct.length != 0) {
                 for (let i = 0; i < actualProduct.length; i++) {
                     let validCode = actualProduct[i].code;
-                    if (validCode != newProduct.code ) {
+                    if (validCode === newProduct.code) {
+                        console.log("ya existe ese code");
+
+                    } else {
                         actualProduct.push(newProduct);
+                        console.log(actualProduct);
                         await fs.promises.writeFile(
                             this.path,
                             JSON.stringify(actualProduct)
                         );
-                    } else {
-                        console.log("ya existe ese code");
                     }
                 }
+            } else {
+                actualProduct.push(newProduct);
+                await fs.promises.writeFile(
+                    this.path,
+                    JSON.stringify(actualProduct)
+                );
             }
-            actualProduct.push(newProduct);
-            await fs.promises.writeFile(
-                this.path,
-                JSON.stringify(actualProduct)
-            );
 
-            // pusheo a ese array que traigo, el nuevo objeto!
 
         } catch (err) {
             console.log('No pudimos cargar el producto', err);
@@ -86,13 +88,14 @@ class ProductManager {
     async getProductByID(idProducto) {
         try {
             //busco el archivo
-            const dateProduct = await fs.promises.readFile(this.path, 'utf-8');
-            //guardo el archivo en []
-            let products = JSON.parse(dateProduct);
-            //busco el producto por id
-            let productIndex = products.findIndex((product) => product.id === idProducto);
-            //lo muestro
-            return products[productIndex];
+            const dateProduct = await this.getProduct();
+            if (dateProduct.length === 0) {
+                console.log("Todavia no hay producto al cual buscar");
+                return
+            } else {
+                let productIndex = dateProduct.findIndex((product) => product.id === idProducto);
+                return console.log(dateProduct[productIndex]);
+            }
 
         } catch (err) {
             console.log("NOT FOUND, el producto no se encontro", err)
@@ -109,7 +112,8 @@ class ProductManager {
 
 const asd = new ProductManager();
 
-asd.addProduct('jean', 'cortos', 'no tiene', 'asd', 50, 20);
-asd.addProduct('jean', 'cortos', 'no tiene', 'asd', 70, 20);
+asd.addProduct('pantalon', 'cortos', 'quee?', '25', 12345, 30);
+
+
 
 
