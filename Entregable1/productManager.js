@@ -36,20 +36,23 @@ class ProductManager {
             //busco el archivo y lo traigo//
             const actualProduct = await this.getProduct();
             if (actualProduct.length != 0) {
+                let validCode = '';
                 for (let i = 0; i < actualProduct.length; i++) {
-                    let validCode = actualProduct[i].code;
-                    if (validCode === newProduct.code) {
-                        console.log("ya existe ese code");
-
-                    } else {
-                        actualProduct.push(newProduct);
-                        console.log(actualProduct);
-                        await fs.promises.writeFile(
-                            this.path,
-                            JSON.stringify(actualProduct)
-                        );
-                    }
+                    validCode = actualProduct[i].code;
                 }
+                console.log(validCode, newProduct.code)
+               
+                if (validCode === newProduct.code) {
+                    console.log("ya existe ese code");
+
+                } else {
+                    actualProduct.push(newProduct);
+                    await fs.promises.writeFile(
+                        this.path,
+                        JSON.stringify(actualProduct)
+                    );
+                }
+
             } else {
                 actualProduct.push(newProduct);
                 await fs.promises.writeFile(
@@ -102,17 +105,17 @@ class ProductManager {
 
         }
     }
-
-    updateProduct(idProduct) {
-        const changeProduct = this.getProductByID(idProduct);
-
-
-    }
+    /* 
+        updateProduct(idProduct) {
+            const changeProduct = this.getProductByID(idProduct);
+    
+    
+        } */
 }
 
 const asd = new ProductManager();
 
-asd.addProduct('pantalon', 'cortos', 'quee?', '25', 12345, 30);
+asd.addProduct('pantalon', 'cortos', 'quee?', '25', 123456123122427, 80);
 
 
 
