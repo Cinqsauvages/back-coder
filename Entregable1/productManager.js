@@ -16,7 +16,6 @@ class ProductManager {
     //agrega producto buscando el archivo y agregando el producto//
     async addProduct(title, description, price, thrumbail, code, stock) {
         // recopilo los datos y creo el objeto//
-
         if ((title.length === 0) || (description.length === 0) || (price.length === 0) || (thrumbail.length === 0) || (code.length === 0) || (stock.length === 0)) {
             console.log("Verifique que los campos esten llenos, y que el code no sea igual a el de los productos ya cargados!.")
             return;
@@ -35,32 +34,31 @@ class ProductManager {
         try {
             //busco el archivo y lo traigo//
             const actualProduct = await this.getProduct();
+            //si no es vacio el archivo
             if (actualProduct.length != 0) {
-                let validCode = '';
-                for (let i = 0; i < actualProduct.length; i++) {
-                    validCode = actualProduct[i].code;
-                }
-                console.log(validCode, newProduct.code)
-               
-                if (validCode === newProduct.code) {
-                    console.log("ya existe ese code");
+                //lo recorro
+                actualProduct.forEach(element => {
+                    //verifico que los id sean diferentes, sino le agrego uno nuevo
+                    if (element.id === newProduct.id) {
+                        newProduct.id = this.#getID();
+                    }
+                });
+                //lo escribo en el archivo
+                actualProduct.push(newProduct);
 
-                } else {
-                    actualProduct.push(newProduct);
-                    await fs.promises.writeFile(
-                        this.path,
-                        JSON.stringify(actualProduct)
-                    );
-                }
+                await fs.promises.writeFile(
+                    this.path,
+                    JSON.stringify(actualProduct)
+                );
 
-            } else {
+
+            } else if (actualProduct.length === 0) {
                 actualProduct.push(newProduct);
                 await fs.promises.writeFile(
                     this.path,
                     JSON.stringify(actualProduct)
                 );
             }
-
 
         } catch (err) {
             console.log('No pudimos cargar el producto', err);
@@ -80,7 +78,7 @@ class ProductManager {
             const dateProduct = await fs.promises.readFile(this.path, 'utf-8');
             //muestro datos del archivo
 
-            return JSON.parse(dateProduct)
+            return JSON.parse(dateProduct);
 
         } catch (err) {
             console.log('No puedo traer datos de Productos', err);
@@ -88,7 +86,7 @@ class ProductManager {
     }
 
     //busco por ID el producto guardado//
-    async getProductByID(idProducto) {
+    async getProductByID(idProduct) {
         try {
             //busco el archivo
             const dateProduct = await this.getProduct();
@@ -96,8 +94,8 @@ class ProductManager {
                 console.log("Todavia no hay producto al cual buscar");
                 return
             } else {
-                let productIndex = dateProduct.findIndex((product) => product.id === idProducto);
-                return console.log(dateProduct[productIndex]);
+                let productIndex = dateProduct.findIndex((product) => product.id === idProduct);
+                return dateProduct[productIndex];
             }
 
         } catch (err) {
@@ -105,18 +103,85 @@ class ProductManager {
 
         }
     }
-    /* 
-        updateProduct(idProduct) {
-            const changeProduct = this.getProductByID(idProduct);
-    
-    
-        } */
+
+    async updateProduct(idProduct, key, newValue) {
+
+        let object2 = {
+            [key]: newValue,
+        }
+
+        try {
+            const object1 = await this.getProductByID(idProduct);
+            //objeto nuevo
+            let object3 = { ...object1, ...object2 };
+            //array
+            const dateProduct = await this.getProduct();
+
+            let productIndex = dateProduct.findIndex((product) => product.id === idProduct);
+            //cambio el producto por el nuevo//
+            dateProduct[productIndex] = object3;
+
+            await fs.promises.writeFile(
+                this.path,
+                JSON.stringify(dateProduct)
+            );
+            console.log(dateProduct);
+
+        } catch (err) {
+            console.log("Error al traer producto", err);
+
+        }
+    }
+
+    async deletProduct (idProduct){
+        try{
+            //traigo array
+            const dateProduct = await this.getProduct();
+            //lo busco
+            let productIndex = dateProduct.findIndex((product) => product.id === idProduct);
+            //elimino
+            dateProduct.splice(productIndex,1);
+            //cambio archivo
+            await fs.promises.writeFile(
+                this.path,
+                JSON.stringify(dateProduct)
+            );
+
+        }catch(err){
+            console.log("No existe ese producto",err)
+        }
+    }
+
 }
+const archive = new ProductManager();
 
-const asd = new ProductManager();
+const test = async () => {
+    // intento
+    try {
+        // Agregar usuario
+        await archive.addProduct(
+            'prueba 1',
+            'BUEN producto',
+            295,
+            'no tiene',
+            12344,
+            25
+        );
+        // Agregar usuario
+        await archive.addProduct(
+            'prueba 2',
+            'BUEN producto',
+            295,
+            'no tiene',
+            12345,
+            25
+        );
 
-asd.addProduct('pantalon', 'cortos', 'quee?', '25', 123456123122427, 80);
+    } catch (err) {
+        // Si hay error imprimo el error en consola
+        console.log('Salio mal el Test', err);
+    }
+    console.log(await archive.getProduct());
+};
 
-
-
-
+test();
