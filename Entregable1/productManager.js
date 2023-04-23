@@ -139,13 +139,16 @@ class ProductManager {
             const dateProduct = await this.getProduct();
             //lo busco
             let productIndex = dateProduct.findIndex((product) => product.id === idProduct);
+            if(productIndex != -1){
+                dateProduct.splice(productIndex, 1);
+                //cambio archivo
+                await fs.promises.writeFile(
+                    this.path,
+                    JSON.stringify(dateProduct)
+                );
+                return
+            };
             //elimino
-            dateProduct.splice(productIndex,1);
-            //cambio archivo
-            await fs.promises.writeFile(
-                this.path,
-                JSON.stringify(dateProduct)
-            );
 
         }catch(err){
             console.log("No existe ese producto",err)
