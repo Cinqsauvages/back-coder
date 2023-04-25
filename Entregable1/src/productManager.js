@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 class ProductManager {
     //variable local de id de los productos.
@@ -156,35 +156,101 @@ class ProductManager {
     }
 
 }
-const archive = new ProductManager();
+/* const archive = new ProductManager();
 
 const test = async () => {
     // intento
     try {
         // Agregar usuario
         await archive.addProduct(
-            'prueba 1',
+            'Producto 1',
             'BUEN producto',
-            295,
+            500,
             'no tiene',
             12344,
-            25
+            10
         );
         // Agregar usuario
         await archive.addProduct(
-            'prueba 2',
+            'Producto 2',
             'BUEN producto',
-            295,
+            1200,
             'no tiene',
             12345,
             25
-        );
+        ),
+        await archive.addProduct(
+            'Producto 3',
+            'BUEN producto',
+            3500,
+            'no tiene',
+            123456,
+            5
+        ),
+        await archive.addProduct(
+            'Producto 4',
+            'BUEN producto',
+            32455,
+            'no tiene',
+            123457,
+            3
+        ),
+        await archive.addProduct(
+            'Producto 5',
+            'BUEN producto',
+            295,
+            'no tiene',
+            123458,
+            6
+        ),
+        await archive.addProduct(
+            'Producto 6',
+            'BUEN producto',
+            650,
+            'no tiene',
+            123459,
+            8
+        ),
+        await archive.addProduct(
+            'Producto 7',
+            'BUEN producto',
+            800,
+            'no tiene',
+            1234555,
+            50
+        ),
+        await archive.addProduct(
+            'Producto 8',
+            'BUEN producto',
+            3200,
+            'no tiene',
+            12345551,
+            15
+        ),
+        await archive.addProduct(
+            'Producto 9',
+            'BUEN producto',
+            670,
+            'no tiene',
+            12345523,
+            18
+        ),
+        await archive.addProduct(
+            'Producto 10',
+            'BUEN producto',
+            322,
+            'no tiene',
+            12345323,
+            19
+        )
+        ;
 
     } catch (err) {
         // Si hay error imprimo el error en consola
         console.log('Salio mal el Test', err);
     }
-    console.log(await archive.getProduct());
 };
 
-test();
+test(); */
+
+export default ProductManager;
