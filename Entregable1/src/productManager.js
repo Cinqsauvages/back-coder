@@ -125,7 +125,7 @@ class ProductManager {
                 this.path,
                 JSON.stringify(dateProduct)
             );
-            console.log(dateProduct);
+            return(dateProduct);
 
         } catch (err) {
             console.log("Error al traer producto", err);
