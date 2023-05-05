@@ -3,6 +3,7 @@ import { productsRoute } from './routes/products.route.js';
 import { cartsRoute } from './routes/carts.route.js';
 
 const app = express();
+
 // Seteo carpeta public como raiz de servidor estatico
 app.use(express.static('../public'));
 

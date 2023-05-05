@@ -17,9 +17,9 @@ class ProductManager {
     async addProduct(title, description, price, thrumbail, code, stock) {
         // recopilo los datos y creo el objeto//
         if ((title.length === 0) || (description.length === 0) || (price.length === 0) || (thrumbail.length === 0) || (code.length === 0) || (stock.length === 0)) {
-            console.log("Verifique que los campos esten llenos, y que el code no sea igual a el de los productos ya cargados!.")
-            return;
-        }
+            return console.log("Verifique que los campos esten llenos, y que el code no sea igual a el de los productos ya cargados!.");
+        };
+
         const newProduct = {
             title,
             description,
@@ -33,30 +33,32 @@ class ProductManager {
 
         try {
             //busco el archivo y lo traigo//
-            const actualProduct = await this.getProduct();
+            const arrayProduct = await this.getProduct();
             //si no es vacio el archivo
-            if (actualProduct.length != 0) {
-                //lo recorro
-                actualProduct.forEach(element => {
+            if (arrayProduct.length != 0) {
+                //lo recorro 
+                arrayProduct.forEach(element => {
                     //verifico que los id sean diferentes, sino le agrego uno nuevo
                     if (element.id === newProduct.id) {
                         newProduct.id = this.#getID();
                     }
                 });
+
                 //lo escribo en el archivo
-                actualProduct.push(newProduct);
+                arrayProduct.push(newProduct);
 
                 await fs.promises.writeFile(
                     this.path,
-                    JSON.stringify(actualProduct)
+                    JSON.stringify(arrayProduct)
                 );
 
+            } else if (arrayProduct.length === 0) {
+                //si la base de dato de los productos es vacia
+                arrayProduct.push(newProduct);
 
-            } else if (actualProduct.length === 0) {
-                actualProduct.push(newProduct);
                 await fs.promises.writeFile(
                     this.path,
-                    JSON.stringify(actualProduct)
+                    JSON.stringify(arrayProduct)
                 );
             }
 
@@ -71,13 +73,12 @@ class ProductManager {
         return this.#id;
     }
 
-    //funciona
+    //traer el archivo de productos
     async getProduct() {
         try {
             //busco el archivo
             const dateProduct = await fs.promises.readFile(this.path, 'utf-8');
             //muestro datos del archivo
-
             return JSON.parse(dateProduct);
 
         } catch (err) {
@@ -97,13 +98,13 @@ class ProductManager {
                 let productIndex = dateProduct.findIndex((product) => product.id === idProduct);
                 return dateProduct[productIndex];
             }
-
         } catch (err) {
             console.log("NOT FOUND, el producto no se encontro", err)
 
         }
     }
 
+    //modifico el producto que quiero
     async updateProduct(idProduct, key, newValue) {
 
         let object2 = {
@@ -125,7 +126,7 @@ class ProductManager {
                 this.path,
                 JSON.stringify(dateProduct)
             );
-            return(dateProduct);
+            return (dateProduct);
 
         } catch (err) {
             console.log("Error al traer producto", err);
@@ -133,13 +134,14 @@ class ProductManager {
         }
     }
 
-    async deletProduct (idProduct){
-        try{
+    //borro el producto
+    async deletProduct(idProduct) {
+        try {
             //traigo array
             const dateProduct = await this.getProduct();
             //lo busco
             let productIndex = dateProduct.findIndex((product) => product.id === idProduct);
-            if(productIndex != -1){
+            if (productIndex != -1) {
                 dateProduct.splice(productIndex, 1);
                 //cambio archivo
                 await fs.promises.writeFile(
@@ -150,107 +152,10 @@ class ProductManager {
             };
             //elimino
 
-        }catch(err){
-            console.log("No existe ese producto",err)
+        } catch (err) {
+            console.log("No existe ese producto", err)
         }
     }
-
 }
-/* const archive = new ProductManager();
-
-const test = async () => {
-    // intento
-    try {
-        // Agregar usuario
-        await archive.addProduct(
-            'Producto 1',
-            'BUEN producto',
-            500,
-            'no tiene',
-            12344,
-            10
-        );
-        // Agregar usuario
-        await archive.addProduct(
-            'Producto 2',
-            'BUEN producto',
-            1200,
-            'no tiene',
-            12345,
-            25
-        ),
-        await archive.addProduct(
-            'Producto 3',
-            'BUEN producto',
-            3500,
-            'no tiene',
-            123456,
-            5
-        ),
-        await archive.addProduct(
-            'Producto 4',
-            'BUEN producto',
-            32455,
-            'no tiene',
-            123457,
-            3
-        ),
-        await archive.addProduct(
-            'Producto 5',
-            'BUEN producto',
-            295,
-            'no tiene',
-            123458,
-            6
-        ),
-        await archive.addProduct(
-            'Producto 6',
-            'BUEN producto',
-            650,
-            'no tiene',
-            123459,
-            8
-        ),
-        await archive.addProduct(
-            'Producto 7',
-            'BUEN producto',
-            800,
-            'no tiene',
-            1234555,
-            50
-        ),
-        await archive.addProduct(
-            'Producto 8',
-            'BUEN producto',
-            3200,
-            'no tiene',
-            12345551,
-            15
-        ),
-        await archive.addProduct(
-            'Producto 9',
-            'BUEN producto',
-            670,
-            'no tiene',
-            12345523,
-            18
-        ),
-        await archive.addProduct(
-            'Producto 10',
-            'BUEN producto',
-            322,
-            'no tiene',
-            12345323,
-            19
-        )
-        ;
-
-    } catch (err) {
-        // Si hay error imprimo el error en consola
-        console.log('Salio mal el Test', err);
-    }
-};
-
-test(); */
 
 export default ProductManager;
