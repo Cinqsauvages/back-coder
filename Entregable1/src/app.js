@@ -4,10 +4,6 @@ import { cartsRoute } from './routes/carts.route.js';
 
 const app = express();
 
-// Seteo carpeta public como raiz de servidor estatico
-app.use(express.static('../public'));
-
-
 //parseo a json
 app.use(express.json())
 //permite recibir datos complejos desde las url

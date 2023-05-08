@@ -1,42 +1,38 @@
 import { Router } from "express";
-import ProductManager from '../productManager.js';
+import ProductManager from '../controllers/productManager.js';
 
 const prod = new ProductManager();
-const products = [];
 const productsRoute = Router();
 
 
 //creador de producto
 productsRoute.post('/', async (req, res) => {
     try {
-        const carga = {
-            title : req.body.name,
-            description :req.body.description,
-            thrumbail:req.body.thrumbail,
-            price: req.body.price,
-            code: req.body.code,
-            stock: req.body.stock,
-        }
-        const createProduct = await prod.addProduct(carga.title, carga.description, carga.thrumbail, carga.price, carga.code, carga.stock);
+        const product = req.body;
+
+        const createProduct = await prod.addProduct(product);
 
         res.status(201).send('Se a creado el producto nuevo.');
     } catch (err) {
-        res.status(401).send(err, 'Ocurrio un error al cargar el producto nuevo.');
+        res.status(401).json({ error: 'Ocurrió un error al cargar el producto nuevo.', message: err });
     }
 })
 
 //devuelve el array de productos, y en caso de un limit la cantidad
 productsRoute.get("/", async (req, res) => {
-    //agrego una consulta
-    let limit = req.query.limit;
-    //llamo al array
-    let array = await prod.getProduct();
-    //limit tiene que ser distinto a falsy, y menos o igual a el tamaño del array//
-    if (limit || limit <= array.length) {
-        let cutArray = array.slice(0, limit);
-        products.push(cutArray);
-        //muestro el array de prodct
-        res.send(products);
+    try {
+        const getProductList = await prod.getProduct();
+        // Seteo el tipo de valor limit como un número
+        let limit = parseInt(req.query.limit);
+        // Si el usuario ingresa un límite de resultados lo muestro, sino muestro la totalidad de productos
+        if (!limit) {
+            return res.send({ getProductList });
+        } else {
+            let productsLimit = getProductList.slice(0, limit);
+            res.send({ productsLimit });
+        }
+    } catch (error) {
+        console.log(error);
     }
 });
 
@@ -56,5 +52,25 @@ productsRoute.get('/:id', async (req, res) => {
 
 })
 
+productsRoute.put('/', async (req, res) => {
+    let idProd = req.body.id;
+    let attribute = req.body.attribute;
+    let value = req.body.value;
+    try {
+        let changeProd = await prod.updateProduct(idProd, attribute, value);
+        res.send(changeProd);
+    } catch (err) {
+        res.send("error no se pudo cargar");
+    }
+})
+
+productsRoute.delete('/:pid', async (req, res) => {
+	try {
+		let id = parseInt(req.params.pid);
+		res.send(await prod.deletProduct(id));
+	} catch (error) {
+		console.log(error);
+	}
+});
 
 export { productsRoute };

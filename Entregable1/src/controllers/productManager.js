@@ -10,23 +10,48 @@ class ProductManager {
         if (!fs.existsSync(this.path)) {
             fs.writeFileSync(this.path, JSON.stringify([]));
         }
+    }
 
+    //crea un id por cada producto nuevo.
+    #getID() {
+        this.#id++;
+        return this.#id;
     }
 
     //agrega producto buscando el archivo y agregando el producto//
-    async addProduct(title, description, price, thrumbail, code, stock) {
+    async addProduct(product) {
         // recopilo los datos y creo el objeto//
-        if ((title.length === 0) || (description.length === 0) || (price.length === 0) || (thrumbail.length === 0) || (code.length === 0) || (stock.length === 0)) {
-            return console.log("Verifique que los campos esten llenos, y que el code no sea igual a el de los productos ya cargados!.");
-        };
+        if (
+            !product.title ||
+            !product.description ||
+            !product.code ||
+            !product.price ||
+            !product.status ||
+            !product.stock ||
+            !product.category
+        ) {
+            return `Faltan propiedades obligatorias en el producto!
+			
+			title: ${product.title} 
+			description: ${product.description} 
+			code: ${product.code} 
+			price: ${product.price} 
+			status: ${product.status}
+			stock: ${product.stock} 
+			category: ${product.category}
+			Solo la propiedad 'thumbnails' no es obligatoria. 
+			Por favor intente nuevamente.
+			`;
+        }
 
         const newProduct = {
-            title,
-            description,
-            price,
-            thrumbail,
-            code,
-            stock
+            title: product.title,
+            description: product.description,
+            price: product.price,
+            code: product.code,
+            stock: product.stock,
+            status: product.status,
+            category: product.category
         };
         //agrega id al objeto!
         newProduct.id = this.#getID();
@@ -67,11 +92,6 @@ class ProductManager {
         }
     }
 
-    //crea un id por cada producto nuevo.
-    #getID() {
-        this.#id++;
-        return this.#id;
-    }
 
     //traer el archivo de productos
     async getProduct() {
@@ -79,7 +99,8 @@ class ProductManager {
             //busco el archivo
             const dateProduct = await fs.promises.readFile(this.path, 'utf-8');
             //muestro datos del archivo
-            return JSON.parse(dateProduct);
+            const parsProduct = JSON.parse(dateProduct);
+            return parsProduct;
 
         } catch (err) {
             console.log('No puedo traer datos de Productos', err);
