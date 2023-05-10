@@ -26,10 +26,10 @@ productsRoute.get("/", async (req, res) => {
         let limit = parseInt(req.query.limit);
         // Si el usuario ingresa un límite de resultados lo muestro, sino muestro la totalidad de productos
         if (!limit) {
-            return res.send({ getProductList });
+            return res.send(getProductList);
         } else {
             let productsLimit = getProductList.slice(0, limit);
-            res.send({ productsLimit });
+            res.send(productsLimit );
         }
     } catch (error) {
         console.log(error);

@@ -47,6 +47,14 @@ class cartsManager {
 		};
 		//le creo al carrito un id
 		cart.id = this.#generateIdCart();
+
+		listCarts.forEach(element => {
+			//verifico que los id sean diferentes, sino le agrego uno nuevo
+			if (element.id === cart.id) {
+				cart.id = this.#generateIdCart();
+			}
+		});
+
 		listCarts.push(cart);
 		//lo escribo
 		await this.#writeFileCarts(listCarts);
@@ -57,14 +65,15 @@ class cartsManager {
 	getCartById = async (id) => {
 		//Almaceno contenido del archivo de productos en una variable
 		let carts = await this.#readFileCarts();
-		//Busco el índice del producto solicitado por id
+		//Busco el índice del carrito solicitado por id
 		let validCart = await this.#validIdCart(id);
+		console.log(validCart);
 		if (!validCart) {
 			return 'Carrito no encontrado';
 		}
 		// Muestro el producto solicitado
 		console.log('Producto Encontrado!');
-		return carts[validCart];
+		return validCart;
 	};
 
 	addProductToCart = async (cid, pid) => {

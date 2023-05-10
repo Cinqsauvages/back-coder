@@ -15,8 +15,9 @@ cartsRoute.post('/', async (req, res) => {
 cartsRoute.get('/:cid', async (req, res) => {
 	try {
 		const cid = parseInt(req.params.cid);
-		let getID = await cartsList.getCartById(cid);
-		res.send(await getID);
+		let getCart = await cartsList.getCartById(cid);
+		
+		res.send(getCart);
 	} catch (error) {
 		console.log(error);
 	}
