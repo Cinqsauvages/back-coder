@@ -1,7 +1,6 @@
 import { Router } from "express";
-import ProductManager from '../controllers/productManager.js';
+import { productManager } from "../../utils.js";
 
-const prod = new ProductManager();
 const productsRoute = Router();
 
 
@@ -10,7 +9,7 @@ productsRoute.post('/', async (req, res) => {
     try {
         const product = req.body;
 
-        const createProduct = await prod.addProduct(product);
+        const createProduct = await productManager.addProduct(product);
 
         res.status(201).send('Se a creado el producto nuevo.');
     } catch (err) {
@@ -21,7 +20,7 @@ productsRoute.post('/', async (req, res) => {
 //devuelve el array de productos, y en caso de un limit la cantidad
 productsRoute.get("/", async (req, res) => {
     try {
-        const getProductList = await prod.getProduct();
+        const getProductList = await productManager.getProduct();
         // Seteo el tipo de valor limit como un número
         let limit = parseInt(req.query.limit);
         // Si el usuario ingresa un límite de resultados lo muestro, sino muestro la totalidad de productos
@@ -41,7 +40,7 @@ productsRoute.get('/:id', async (req, res) => {
     //tomo parameto de la url, lo parseo en numero
     let id = parseInt(req.params.id);
     //le envio a la funcion el id para que me traiga el producto
-    let productByID = await prod.getProductByID(id);
+    let productByID = await productManager.getProductByID(id);
 
     //si no existe
     if (!productByID) {
@@ -57,7 +56,7 @@ productsRoute.put('/', async (req, res) => {
     let attribute = req.body.attribute;
     let value = req.body.value;
     try {
-        let changeProd = await prod.updateProduct(idProd, attribute, value);
+        let changeProd = await productManager.updateProduct(idProd, attribute, value);
         res.send(changeProd);
     } catch (err) {
         res.send("error no se pudo cargar");
@@ -67,7 +66,7 @@ productsRoute.put('/', async (req, res) => {
 productsRoute.delete('/:pid', async (req, res) => {
 	try {
 		let id = parseInt(req.params.pid);
-		res.send(await prod.deletProduct(id));
+		res.send(await productManager.deletProduct(id));
 	} catch (error) {
 		console.log(error);
 	}
