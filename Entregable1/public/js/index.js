@@ -19,7 +19,7 @@ btn.addEventListener('click', (e) => {
     updateProduct(key, value, id);
 })
 
-btnAdd.addEventListener('click',(e)=>{
+btnAdd.addEventListener('click', (e) => {
     e.preventDefault();
     let title = document.getElementById('title').value;
     let description = document.getElementById('description').value;
@@ -29,7 +29,7 @@ btnAdd.addEventListener('click',(e)=>{
     let category = document.getElementById('category').value;
     let status = document.getElementById('status').value;
 
-    let newProduct = {title,description,code,price,stock,category,status};
+    let newProduct = { title, description, code, price, stock, category, status };
     addProd(newProduct);
 })
 
@@ -47,28 +47,29 @@ const createList = async (prod) => {
     await prod.forEach(element => {
         //creo hijo
         let div = document.createElement('div');
+        div.className = 'prodTime'
         //dibujo en e hijo
-        div.innerHTML = ` <ul>
-            <li>${element.title}</li>
-            <li>${element.description}</li>
-            <li>${element.code}</li>
-            <li>${element.price}</li>
-            <li>${element.id}</li>
-        </ul>`
+        div.innerHTML = `
+            <h4>${element.title}</h4>
+            <p>Descripcion: ${element.description}</p>
+            <p>code: ${element.code}</p>
+            <p>Precio:$${element.price}</p>
+            <p>Id: ${element.id}</p>
+        `
         //cargo en el padre
         divList.appendChild(div);
     });
 }
 
 const updateProduct = (key, value, id) => {
-    socket.emit('update', {key, value, id});
+    socket.emit('update', { key, value, id });
 
 }
 
-const addProd = (prod) =>{
+const addProd = (prod) => {
 
     socket.emit('add-prod', prod);
 }
-const deletProd = (id) =>{
+const deletProd = (id) => {
     socket.emit('delet', id);
 }

@@ -1,12 +1,33 @@
-<h1>productos</h1>
+<main class="mainHome">
 
-<ul>
+    <div class="titleHome">
+        <h1>Productos del E-commers</h1>
+    </div>
+
+ <div class="productsHome">
+
     {{#each products}}
-    <li>Nombre:{{this.title}}</li>
-    <li>Descripcion:{{this.description}}</li>
-    <li>Precio:{{this.price}}</li>
-    <li>Code:{{this.code}}</li>
-    <li>Stock:{{this.stock}}</li>
-    <li>id:{{this.id}}</li>
+   
+        <div class="card">
+            <div class="part1">
+                <h5 class="card-title">
+                    {{this.title}}</h5>
+                <p class="card-description">Descripcion:
+                    {{this.description}}</p>
+            </div>
+            <div class="part2">
+                <p>Precio: ${{this.price}}</p>
+                <p>Code:{{this.code}}</p>
+            </div>
+            <div class="part3">
+                <p>Stock:{{this.stock}}</p>
+                <p>id:{{this.id}}</li>
+                </p>
+            </div>
+        </div>
+    
     {{/each}}
-</ul>
+</div>
+
+
+</main>
