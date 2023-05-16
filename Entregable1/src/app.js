@@ -29,12 +29,20 @@ export const io = new Server(httpServer);
 io.on('connection', async (socket) => {
     console.log('Cliente conectado..');
     socket.emit('product_list', await productManager.getProduct());
-});
-io.on('update',  (data) => {
-    console.log(data);
-    realTimeProducts(data)
 
-})
+    socket.on('update', async (data) => {
+        let modifico = await productManager.updateProduct(parseInt(data.id), data.key, data.value)
+    })
+    
+    socket.on('add-prod', async (newProd) => {
+        await productManager.addProduct(newProd);
+    })
+    socket.on('delet', async (id) =>{
+        await productManager.deletProduct(id);
+    })
+});
+
+
 
 
 // Set handlebars- a ese nombre es ese gestor
