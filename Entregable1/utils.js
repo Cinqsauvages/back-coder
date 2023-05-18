@@ -24,8 +24,3 @@ export const productManager = new ProductManager();
 export const app = express();
 export const server = http.createServer(app);
 export const io = new Server(server);
-
-io.on('connection', async (socket) => {
-    console.log('Cliente conectado..');
-    socket.emit('product_list', await productManager.getProduct());
-});

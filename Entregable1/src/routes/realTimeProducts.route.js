@@ -11,19 +11,24 @@ realTimeProducts.get('/', async (req, res) => {
     res.render('realTimeProducts');
 })
 
-io.on('connection', async (socket) =>{
-    
+io.on('connection', async (socket) => {
     console.log('Cliente conectado..');
     socket.emit('product_list', await productManager.getProduct());
+
     socket.on('update', async (data) => {
         let modifico = await productManager.updateProduct(parseInt(data.id), data.key, data.value)
+
+        socket.emit('updatedProducts', await productManager.getProduct());
     })
-    
+
     socket.on('add-prod', async (newProd) => {
         await productManager.addProduct(newProd);
+        socket.emit('updatedProducts', await productManager.getProduct());
     })
-    socket.on('delet', async (id) =>{
+    socket.on('delet', async (id) => {
         await productManager.deletProduct(id);
+
+        socket.emit('updatedProducts', await productManager.getProduct());
     })
 })
 

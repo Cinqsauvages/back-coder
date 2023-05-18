@@ -10,7 +10,14 @@ socket.on('product_list', prod => {
     createList(prod);
 })
 
+// Evento para recibir la lista de productos actualizada
+socket.on('updatedProducts', (products) => {
+    // Muestra la lista de productos actualizada en el cliente
+    console.log("estamos aca")
+    createList(products);
+});
 
+//Evento para modificar producto
 btn.addEventListener('click', (e) => {
     e.preventDefault();
     let key = document.getElementById('key').value;
@@ -19,6 +26,7 @@ btn.addEventListener('click', (e) => {
     updateProduct(key, value, id);
 })
 
+//evento para agregar
 btnAdd.addEventListener('click', (e) => {
     e.preventDefault();
     let title = document.getElementById('title').value;
@@ -33,6 +41,7 @@ btnAdd.addEventListener('click', (e) => {
     addProd(newProduct);
 })
 
+//evento para elminar
 btnDelet.addEventListener('click', (e) => {
     e.preventDefault();
     let id = parseInt(document.getElementById('idDelet').value);
@@ -42,6 +51,7 @@ btnDelet.addEventListener('click', (e) => {
 
 //dibujo lista de Productos
 const createList = async (prod) => {
+
     let divList = document.getElementById('listOfProducts');
     divList.innerHTML = '';
     await prod.forEach(element => {
@@ -61,15 +71,17 @@ const createList = async (prod) => {
     });
 }
 
+
+//funciones que envian datos al servidor
 const updateProduct = (key, value, id) => {
     socket.emit('update', { key, value, id });
 
 }
 
 const addProd = (prod) => {
-
     socket.emit('add-prod', prod);
 }
+
 const deletProd = (id) => {
     socket.emit('delet', id);
 }
