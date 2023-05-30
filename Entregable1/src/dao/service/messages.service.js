@@ -1,4 +1,4 @@
-import { MessagesModel } from "../dao/models/messages.model"
+import { MessagesModel } from "../models/messages.model.js"
 
 class MessagesService{
     constructor(){
@@ -9,6 +9,7 @@ class MessagesService{
     }
 };
 
-const messagesService = new MessagesService();
 
-export default messagesService
+
+const messagesService = new MessagesService();
+export default {messagesService}

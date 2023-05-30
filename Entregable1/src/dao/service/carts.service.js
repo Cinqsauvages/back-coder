@@ -1,4 +1,4 @@
-import { CartsModel } from "../dao/models/carts.model";
+import { CartsModel } from "../models/carts.model.js";
 
 class CartService{
     constructor(){
@@ -8,9 +8,18 @@ class CartService{
     async getAllCarts(){
         return await this.model.find();
     }
+
+    async addCarts () {
+        const cart = {
+            products: [],
+        };
+
+        await this.model.insertOne(cart);
+    }
 }
 
-const cartService = new CartService();
 
-export default cartService;
+
+const cartService = new CartService();
+export default {cartService}
 
