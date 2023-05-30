@@ -1,6 +1,6 @@
 //se usa para instalar las diferentes instancias del proyecto.
-import cartsManager from "./src/controllers/cartsManager.js";
-import ProductManager from "./src/controllers/productManager.js";
+import cartsManager from "./src/dao/managers/cartsManager.js";
+import ProductManager from "./src/dao/managers/productManager.js";
 // para usar dirname
 import { fileURLToPath } from "url";
 import { dirname } from 'path';

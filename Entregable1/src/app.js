@@ -4,9 +4,9 @@ import handlebars from "express-handlebars"
 import __dirname from '../utils.js';
 
 //importo rutas
-import { productsRoute } from './routes/products.route.js';
-import { cartsRoute } from './routes/carts.route.js';
-import { realTimeProducts } from './routes/realTimeProducts.route.js';
+import { productsRoute } from './routers/products.router.js';
+import { cartsRoute } from './routers/carts.router.js';
+import { realTimeProducts } from './routers/realTimeProducts.router.js';
 import { productManager, server, app } from '../utils.js';
 
 
