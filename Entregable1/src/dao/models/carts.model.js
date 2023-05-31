@@ -2,10 +2,8 @@ import mongoose from "mongoose";
 
 
 const cartsSchema = new mongoose.Schema({
-    products:{
-        id: String,
-        quantity: Number
-    }
+    idProd: String,
+    quantity: Number
 });
 
 

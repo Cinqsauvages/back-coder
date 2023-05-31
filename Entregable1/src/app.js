@@ -9,9 +9,9 @@ import { productsRoute } from './routers/products.router.js';
 import { cartsRoute } from './routers/carts.router.js';
 import { realTimeProducts } from './routers/realTimeProducts.router.js';
 import { productManager, server, app } from '../utils.js';
-import { productsRouterAtlas } from './routers/products.atlas.router.js';
-import { cartRouterAtlas } from './routers/carts.atlas.router.js';
-import { messagesRouteAtlas } from './routers/messages.atlas.router.js';
+import { productsRouterAtlas } from './routers/productsDB.router.js';
+import { cartRouterAtlas } from './routers/cartsDB.router.js';
+import { messagesRouteAtlas } from './routers/messagesDB.router.js';
 
 
 
@@ -43,9 +43,10 @@ app.get('/', async (req, res) => {
 app.use('/realTimeProducts', realTimeProducts)
 app.use('/api/products', productsRoute);
 app.use('/api/carts', cartsRoute);
-app.use('/api/productsAtlas', productsRouterAtlas);
-app.use('/api/cartsAtlas', cartRouterAtlas);
-app.use('/api/chatAtlas', messagesRouteAtlas);
+//rutas de de mongo
+app.use('/api/productsDB', productsRouterAtlas);
+app.use('/api/cartsDB', cartRouterAtlas);
+app.use('/api/chatDB', messagesRouteAtlas);
 
 //conectando a Atlas
 mongoose.connect('mongodb+srv://juanheguilen:Cinqsauvages1234@cluster0.jljrb4e.mongodb.net/?retryWrites=true&w=majority')
