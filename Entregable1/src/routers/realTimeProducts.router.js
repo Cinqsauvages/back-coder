@@ -12,7 +12,6 @@ realTimeProducts.get('/', async (req, res) => {
 })
 
 io.on('connection', async (socket) => {
-    console.log('Cliente conectado..');
     socket.emit('product_list', await productManager.getProduct());
 
     socket.on('update', async (data) => {
