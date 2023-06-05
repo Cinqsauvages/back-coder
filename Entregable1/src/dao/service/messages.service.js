@@ -14,21 +14,21 @@ class MessagesService {
     }
 
     async saveMsj(dato) {
-        //esta opcion me va pusheando los mensajes, pero no se como imprimirlo en el dom
-        /* //recibo el mail y el mensaje, lo tengo que pushear a la base de dato que tenga ese mail.
-        let doc = await this.model.findOne({email: dato.email});
-        //si el doc existe
-        if(doc){
-            //pusheo el mensaje al array.
-            doc.message.push(dato.msj)
-            //lo guardoi
-            await doc.save()
-        } */
-
-        //esta opcion me los va modificando los mensajes pero se me imprime en el DOM
+        //recibo el msj, guardo en array
         let msj = []
         msj.push(dato.msj)
-        return await this.model.findOneAndUpdate({ email: dato.email }, { message: msj });
+        //busco por email
+        let chat =  await this.model.findOne({ email: dato.email });
+        //si el array del msj es diferente a vacio
+        if(chat.message.length != 0 ){
+            let before = chat.message
+            //pusheo en el array los mensajes
+            let after = [...before, ...msj];
+            chat.message = after;
+            return await chat.save();
+        }else{
+            return await this.model.updateOne({email:dato.email},{message:msj});
+        }
 
     }
 };

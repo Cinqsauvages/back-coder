@@ -22,9 +22,11 @@ cartRouterAtlas.get('/:id', async (req, res) => {
    res.send(findCart);
 })
 
-cartRouterAtlas.post('/', async (req, res) => {
-   const product = req.body;
-   const addProduct = await cartService.addProdCart(product);
+cartRouterAtlas.post('/:idCart/product/:idProd/:quantity', async (req, res) => {
+   const idCart = req.params.idCart;
+   const idProd = req.params.idProd;
+   const quantity = req.params.quantity;
+   const addProduct = await cartService.addProdCart(idCart, idProd, quantity);
    res.send(addProduct);
 })
 

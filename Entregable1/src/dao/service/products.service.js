@@ -9,6 +9,10 @@ class ProductService {
         //retorno todos los productos
         return await this.model.find();
     }
+    async getSomeProducts(cantidad){
+        //el operadore lt, filtra por cantidad maxima.
+        return await this.model.find().limit(cantidad);
+    }
     //agrego prod
     async addProduct(product) {
         //recibo el producto y lo creo

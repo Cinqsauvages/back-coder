@@ -9,8 +9,11 @@ class CartService {
         return await this.model.find();
     }
 
-    async addProdCart(prod) {
-        return await this.model.create(prod);
+    async addProdCart(idCart, idProd, cantidad) {
+        let doc = await this.model.findById(idCart);
+        doc.idProd = idProd;
+        doc.quantity = cantidad
+        return await doc.save();
     }
 
     async deletCarrito(idCart) {

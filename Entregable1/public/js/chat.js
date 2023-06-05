@@ -60,31 +60,32 @@ inputMSJ.addEventListener('keyup', (event) => {
         //evaluo que no sea mensaje vacio
         if (msj.trim().length > 0) {
             //emito el menssage
-            socket.emit('message', {msj,email});
+            socket.emit('message', { msj, email });
             inputMSJ.value = '';
         }
     }
 });
 
 
-//funcion que escribe el chat
-const render = (data) => {
-    // Genero el html
-    const html = data.map((elem) => {
-        // Recorro el array de mensajes y genero el html
-        return `<div>
-				<strong>${elem.user}:</strong>
-                <em>${elem.message}</em>
-            </div>`;
-    }).join(' '); // Convierto el array de strings en un string
+const render = async (data) => {
+    //tengo que renderizar los mensajes previos primero
+    //recibo un array de obj, tengo usuarios y mensajes
+    const html = data.map(element => {
+        const mensajes = element.message.map(mensaje => `<p>${mensaje}</p>`).join('');
+        return `
+          <div>
+            <strong>${element.user}:</strong>
+            <em>${mensajes}</em>
+          </div>
+        `;
+    }).join('');
 
-    // Inserto el html en el elemento con id messages
     document.getElementById('messages').innerHTML = html;
+
 }
-
-
 
 // socket retoma los mensages guardados
 socket.on('messages', (data) => {
+
     render(data)
 });
