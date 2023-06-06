@@ -2,6 +2,12 @@ import { Router } from "express";
 import cartService from '../dao/service/carts.service.js';
 
 const cartRouterAtlas = Router()
+
+cartRouterAtlas.post('/', async (req, res) => {
+   const newCart = await cartService.createCart();
+   res.send('Carrito creado')
+})
+
 //llama a toods los carritos
 cartRouterAtlas.get('/', async (req, res) => {
    const carts = await cartService.getAllCarts();

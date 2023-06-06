@@ -23,6 +23,13 @@ class CartService {
     async cartById(idCart) {
         return await this.model.findOne({ _id: idCart })
     }
+    async createCart() {
+        const newCart = {
+            idProd:'',
+            quantity: 0
+        }
+        return await this.model.create(newCart);
+    }
 
 }
 
