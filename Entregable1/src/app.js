@@ -3,7 +3,6 @@ import express from 'express';
 import handlebars from "express-handlebars"
 import __dirname from '../utils.js';
 import mongoose from 'mongoose'
-import { Server } from 'socket.io';
 
 //importo rutas
 import { productsRoute } from './routers/products.router.js';
@@ -50,7 +49,12 @@ app.use('/api/cartsDB', cartRouterAtlas);
 app.use('/api/chatDB', messagesRouteAtlas);
 
 //conectando a Atlas
-mongoose.connect('mongodb+srv://juanheguilen:Cinqsauvages1234@cluster0.jljrb4e.mongodb.net/?retryWrites=true&w=majority')
+const environment = async () =>{
+
+   await mongoose.connect('mongodb+srv://juanheguilen:Cinqsauvages1234@cluster0.jljrb4e.mongodb.net/?retryWrites=true&w=majority');
+}
+
+environment();
 
 //habilito la escucha del server
 const webServer = server.listen('8080', () => { console.log('Levantando server') });
